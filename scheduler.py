@@ -16,13 +16,13 @@ def process():
 
     print("[Processador] - Processamento finalizado")
 
-@sched.scheduled_job('interval', seconds=8)
-def classify():
-    print("[Classificador] - Iniciando classificacão de imagens")
+# @sched.scheduled_job('interval', seconds=8)
+# def classify():
+#     print("[Classificador] - Iniciando classificacão de imagens")
 
-    clas.classifyImages();
+#     clas.classifyImages();
 
-    print("[Classificador] - Classificação finalizada")
+#     print("[Classificador] - Classificação finalizada")
 
 print("Iniciando agendador")
 sched.start()

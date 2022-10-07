@@ -31,4 +31,3 @@ class Classifier:
         with Pool(3) as p:
             p.map(self.classifyImage, list(nonClassifiedEntries))
 
-        
