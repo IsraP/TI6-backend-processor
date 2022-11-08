@@ -23,8 +23,6 @@ class Processor:
 
         print("[Processador] - Processando imagem " + entry["rotulo"])
 
-        print(entry["imagem"])
-
         img:Image = Image.open(BytesIO(base64.b64decode(entry["imagem"])))
 
         img = img.filter(ImageFilter.GaussianBlur(radius=0))
