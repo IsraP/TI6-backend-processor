@@ -8,7 +8,7 @@ clas = Classifier()
 sched = BlockingScheduler()
 
 
-@sched.scheduled_job('interval', seconds=4)
+@sched.scheduled_job('interval', seconds=5)
 def process():
     print("[Processador] - Iniciando processamento de imagens")
 

@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 import math
 from PIL import Image, ImageFilter, ImageEnhance, ImageFile
+import time
 
 class Processor:
     def __init__(self):
@@ -21,6 +22,8 @@ class Processor:
         currentClient = MongoClient()
 
         print("[Processador] - Processando imagem " + entry["rotulo"])
+
+        print(entry["imagem"])
 
         img:Image = Image.open(BytesIO(base64.b64decode(entry["imagem"])))
 
@@ -51,8 +54,15 @@ class Processor:
 
             
     def processImages(self):
+        start_time = time.time()
+
         nonProcessedEntries = self.client.getNonProcessedImages()
 
-        with Pool(3) as p:
-            p.map(self.processImage, list(nonProcessedEntries))
+        for entry in list(nonProcessedEntries):
+            self.processImage(entry)
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        # with Pool(3) as p:
+        #     p.map(self.processImage, list(nonProcessedEntries))
         
