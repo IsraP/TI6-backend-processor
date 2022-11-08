@@ -56,11 +56,12 @@ class Processor:
 
         nonProcessedEntries = self.client.getNonProcessedImages()
 
-        for entry in list(nonProcessedEntries):
-            self.processImage(entry)
+        # for entry in list(nonProcessedEntries):
+        #     self.processImage(entry)
+            
+        with Pool(2) as p:
+            p.map(self.processImage, list(nonProcessedEntries))
 
         print("--- %s seconds ---" % (time.time() - start_time))
 
-        # with Pool(3) as p:
-        #     p.map(self.processImage, list(nonProcessedEntries))
         
