@@ -4,7 +4,7 @@ from pymongo import MongoClient as mc
 class MongoClient:
 
     def createConnection(self):
-        return mc("mongodb://localhost:27017", connect=False).TI6.mamografias
+        return mc("mongodb://44.198.5.220:27017", connect=False).TI6.mamografias # oof security
 
     def getNonProcessedImages(self):
         return self.createConnection().find({
