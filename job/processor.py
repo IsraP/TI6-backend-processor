@@ -10,6 +10,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import math
 from PIL import Image, ImageFilter, ImageEnhance, ImageFile
 import time
+import skimage
 
 class Processor:
     def __init__(self):
@@ -196,10 +197,14 @@ class Processor:
         return img
     
     def writeb64(self, data):
-        b64_bytes = base64.b64encode(data)
-        b64_string = b64_bytes.decode("utf-8")
+        with BytesIO() as output_bytes:
+            PIL_image = Image.fromarray(skimage.img_as_ubyte(data))
+            PIL_image.save(output_bytes, 'JPEG') # Note JPG is not a vaild type here
+            bytes_data = output_bytes.getvalue()
 
-        return b64_string
+        # encode bytes to base64 string
+        base64_str = str(base64.b64encode(bytes_data), 'utf-8')
+        return base64_str
 
 
     def processImage(self, entry):
@@ -214,6 +219,8 @@ class Processor:
         noArtefact = self.formatarImagem(normalize)
         clahe_img = self.clahe(noArtefact)
         imagemQuadrado = self.pad(clahe_img)
+
+        imagemQuadrado = np.array(imagemQuadrado, dtype=np.uint8)
 
         img_str = self.writeb64(imagemQuadrado)
 
@@ -232,8 +239,9 @@ class Processor:
 
         # for entry in list(nonProcessedEntries):
         #     self.processImage(entry)
+        #     break
             
-        with Pool(8) as p:
+        with Pool(2) as p:
             p.map(self.processImage, list(nonProcessedEntries))
 
         print("--- %s seconds ---" % (time.time() - start_time))  
