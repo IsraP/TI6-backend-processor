@@ -9,13 +9,13 @@ class MongoClient:
     def getNonProcessedImages(self):
         return self.createConnection().find({
             "processado": False
-        })
+        }).limit(36)
 
     def getNonClassifiedImages(self):
         return self.createConnection().find({
             "processado": True,
             "classificado": False
-        })
+        }).limit(36)
 
     def updateImage(self, newDocument):
         self.createConnection().update_one({'_id':newDocument["_id"]}, {"$set": newDocument}, upsert=False)

@@ -237,13 +237,15 @@ class Processor:
     def processImages(self):
         start_time = time.time()
 
-        nonProcessedEntries = self.client.getNonProcessedImages()
+        # limitado
+        nonProcessedEntries = list(self.client.getNonProcessedImages())
+        while(len(nonProcessedEntries) > 0):
+            # for entry in nonProcessedEntries:
+            #     self.processImage(entry)
+        
+            with Pool(2) as p:
+                p.map(self.processImage, nonProcessedEntries)
 
-        # for entry in list(nonProcessedEntries):
-        #     self.processImage(entry)
-        #     break
-            
-        with Pool(2) as p:
-            p.map(self.processImage, list(nonProcessedEntries))
+            nonProcessedEntries = list(self.client.getNonProcessedImages())
 
         print("--- %s seconds ---" % (time.time() - start_time))  
