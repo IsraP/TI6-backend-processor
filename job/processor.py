@@ -224,6 +224,8 @@ class Processor:
 
         img_str = self.writeb64(imagemQuadrado)
 
+        cv.imwrite("./" + entry["rotulo"], imagemQuadrado)
+
         entry["processado"] = True
         entry["imagem_processada"] = img_str
         entry["data_processamento"] = datetime.datetime.utcnow()
