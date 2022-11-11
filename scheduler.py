@@ -1,28 +1,28 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from job.processor import Processor
-from job.classifier import Classifier
+from job.job import Job
+from datetime import datetime
 
-proc = Processor()
-clas = Classifier()
+
+job = Job()
 
 sched = BlockingScheduler()
 
 
-@sched.scheduled_job('interval', seconds=5)
 def process():
-    print("[Processador] - Iniciando processamento de imagens")
+    print("[Serviço - %s] - Iniciando execução do serviço" % datetime.now())
 
-    proc.processImages()
+    job.executeJob()
 
-    print("[Processador] - Processamento finalizado")
+    print("[Serviço - %s] - Execução finalizada" % datetime.now())
 
-# @sched.scheduled_job('interval', seconds=8)
-# def classify():
-#     print("[Classificador] - Iniciando classificacão de imagens")
 
-#     clas.classifyImages();
+if __name__ == '__main__':
+    scheduler = BlockingScheduler()
+    scheduler.add_job(process, 'interval', seconds=5)
+    
+    print("\nIniciando agendador")
 
-#     print("[Classificador] - Classificação finalizada")
-
-print("Iniciando agendador")
-sched.start()
+    try:
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        pass

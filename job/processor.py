@@ -1,16 +1,11 @@
 import base64
-import datetime
 from io import BytesIO
-from multiprocessing import Pool
 from db.mongo_connection import MongoClient
 import numpy as np
 import cv2 as cv
-from matplotlib import pyplot as plt
-from mpl_toolkits.axes_grid1 import ImageGrid
-import math
-from PIL import Image, ImageFilter, ImageEnhance, ImageFile
-import time
+from PIL import Image, ImageFile
 import skimage
+from datetime import datetime
 
 class Processor:
     def __init__(self):
@@ -210,7 +205,7 @@ class Processor:
     def processImage(self, entry):
         currentClient = MongoClient()
 
-        print("[Processador] - Processando imagem " + entry["rotulo"])
+        print("[Processador %s]" % datetime.now() + " - Processando imagem " + entry["rotulo"])
 
         data = self.readb64(entry["imagem"])
 
@@ -224,28 +219,11 @@ class Processor:
 
         img_str = self.writeb64(imagemQuadrado)
 
-        cv.imwrite("./" + entry["rotulo"], imagemQuadrado)
-
         entry["processado"] = True
         entry["imagem_processada"] = img_str
-        entry["data_processamento"] = datetime.datetime.utcnow()
+        entry["data_processamento"] = datetime.utcnow()
 
         currentClient.updateImage(entry)
-        print("[Processador] - Fim do processamento da imagem " + entry["rotulo"])
+        print("[Processador %s]" % datetime.now() + " - Fim do processamento da imagem " + entry["rotulo"])
 
-            
-    def processImages(self):
-        start_time = time.time()
-
-        # limitado
-        nonProcessedEntries = list(self.client.getNonProcessedImages())
-        while(len(nonProcessedEntries) > 0):
-            # for entry in nonProcessedEntries:
-            #     self.processImage(entry)
-        
-            with Pool(2) as p:
-                p.map(self.processImage, nonProcessedEntries)
-
-            nonProcessedEntries = list(self.client.getNonProcessedImages())
-
-        print("--- %s seconds ---" % (time.time() - start_time))  
+        return entry

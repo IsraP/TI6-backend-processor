@@ -4,18 +4,20 @@ from pymongo import MongoClient as mc
 class MongoClient:
 
     def createConnection(self):
-        return mc("mongodb://44.198.5.220:27017", connect=False).TI6.mamografias # oof security
+        return mc("mongodb://44.198.5.220:27017", connect=False) # oof security
 
     def getNonProcessedImages(self):
-        return self.createConnection().find({
+        return self.createConnection().TI6.mamografias.find({
             "processado": False
-        }).limit(36)
+        }).limit(8)
 
     def getNonClassifiedImages(self):
-        return self.createConnection().find({
+        return self.createConnection().TI6.mamografias.find({
             "processado": True,
             "classificado": False
-        }).limit(36)
+        }).limit(8)
 
     def updateImage(self, newDocument):
-        self.createConnection().update_one({'_id':newDocument["_id"]}, {"$set": newDocument}, upsert=False)
+       con = self.createConnection()
+       con.TI6.mamografias.update_one({'_id':newDocument["_id"]}, {"$set": newDocument}, upsert=False)
+       con.close()
